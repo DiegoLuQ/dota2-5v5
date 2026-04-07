@@ -1,0 +1,471 @@
+{
+    "partidas": [
+        {
+            "id": "P8",
+            "fecha": "06/04/2026",
+            "ganador": "Dire",
+            "mvp": "Fenix",
+            "duracion": "1hr 7m 49seg",
+            "equipos": {
+                "Dire": [
+                    "IPPO",
+                    "CARPETA",
+                    "VAIGO",
+                    "LENTER",
+                    "MADJOCKER"
+                ],
+                "Radiant": [
+                    "LIPI",
+                    "NAKAI",
+                    "DOKYZ",
+                    "ERI CHAN",
+                    "PALOMA"
+                ]
+            }
+        },
+        {
+            "id": "P7",
+            "fecha": "06/04/2026",
+            "ganador": "Dire",
+            "mvp": "Pango",
+            "duracion": "35min 37seg",
+            "equipos": {
+                "Dire": [
+                    "MADJOCKER",
+                    "IPPO",
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "ERI CHAN",
+                    "PALOMA",
+                    "CARPETA",
+                    "DOKYZ"
+                ]
+            }
+        },
+        {
+            "id": "P6",
+            "fecha": "05/04/2026",
+            "ganador": "Dire",
+            "mvp": "Grim",
+            "duracion": "43min 40seg",
+            "equipos": {
+                "Dire": [
+                    "DOKYZ",
+                    "ERI CHAN",
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "LIPI",
+                    "PALOMA",
+                    "CARPETA",
+                    "MADJOCKER"
+                ]
+            }
+        },
+        {
+            "id": "P5",
+            "fecha": "26/03/2026",
+            "ganador": "Radiant",
+            "mvp": "Mars",
+            "duracion": "40min 16seg",
+            "equipos": {
+                "Dire": [
+                    "DOKYZ",
+                    "ERI CHAN",
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "LIPI",
+                    "PALOMA",
+                    "CARPETA",
+                    "SKYZER"
+                ]
+            }
+        },
+        {
+            "id": "P4",
+            "fecha": "26/03/2026",
+            "ganador": "Radiant",
+            "mvp": "Oracle",
+            "duracion": "30min 17seg",
+            "equipos": {
+                "Dire": [
+                    "DOKYZ",
+                    "ERI CHAN",
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "LIPI",
+                    "PALOMA",
+                    "CARPETA",
+                    "MADJOCKER"
+                ]
+            }
+        },
+        {
+            "id": "P3",
+            "fecha": "22/03/2026",
+            "ganador": "Radiant",
+            "mvp": "Invoker",
+            "duracion": "33min 27seg",
+            "equipos": {
+                "Dire": [
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER",
+                    "PALOMA",
+                    "CARPETA"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "LIPI",
+                    "IPPO",
+                    "MADJOCKER",
+                    "QUESILLO"
+                ]
+            }
+        },
+        {
+            "id": "P2",
+            "fecha": "15/03/2026",
+            "ganador": "Radiant",
+            "mvp": "Ardilla",
+            "duracion": "1hr 20min 44seg",
+            "equipos": {
+                "Dire": [
+                    "DOKYZ",
+                    "VAIGO",
+                    "LENTER",
+                    "ROGER",
+                    "LIPI"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "PALOMA",
+                    "CARPETA",
+                    "IPPO",
+                    "MADJOCKER"
+                ]
+            }
+        },
+        {
+            "id": "P1",
+            "fecha": "10/02/2026",
+            "ganador": "Dire",
+            "mvp": "Fenix",
+            "duracion": "51min 34seg",
+            "equipos": {
+                "Dire": [
+                    "ERI CHAN",
+                    "VAIGO",
+                    "LENTER",
+                    "LIPI",
+                    "QUESILLO"
+                ],
+                "Radiant": [
+                    "NAKAI",
+                    "PALOMA",
+                    "CARPETA",
+                    "IPPO",
+                    "MADJOCKER"
+                ]
+            }
+        }
+    ],
+    "usuarios": [
+        {
+            "username": "admin1",
+            "password": "admin123"
+        },
+        {
+            "username": "admin2",
+            "password": "admin456"
+        }
+    ],
+    "votos": {},
+    "jugadores": [
+        {
+            "nombre": "CARPETA",
+            "versatilidad": "Grado S",
+            "estado": "Activo",
+            "win": 3,
+            "loss": 5,
+            "ranking": 1,
+            "historial": {
+                "P8": "Mars",
+                "P7": "Pango",
+                "P6": "Luna",
+                "P5": "Tiny",
+                "P4": "Medusa",
+                "P3": "Naix",
+                "P2": "Void Spirit",
+                "P1": "Morph"
+            }
+        },
+        {
+            "nombre": "VAIGO",
+            "versatilidad": "Grado S",
+            "estado": "Activo",
+            "win": 4,
+            "loss": 4,
+            "ranking": 2,
+            "historial": {
+                "P8": "Snap",
+                "P7": "Ursa",
+                "P6": "Grim",
+                "P5": "Mars",
+                "P4": "Oracle",
+                "P3": "Timber",
+                "P2": "Ta",
+                "P1": "Ember"
+            }
+        },
+        {
+            "nombre": "NAKAI",
+            "versatilidad": "Grado A",
+            "estado": "Activo",
+            "win": 4,
+            "loss": 4,
+            "ranking": 3,
+            "historial": {
+                "P8": "Pugna",
+                "P7": "Earth Spirit",
+                "P6": "Void",
+                "P5": "Jakiro",
+                "P4": "Clock",
+                "P3": "Disruptor",
+                "P2": "Tuskar",
+                "P1": "Tuskar"
+            }
+        },
+        {
+            "nombre": "DOKYZ",
+            "versatilidad": "Grado A",
+            "estado": "Activo",
+            "win": 6,
+            "loss": 0,
+            "ranking": 4,
+            "historial": {
+                "P8": "Timber",
+                "P7": "Magnus",
+                "P6": "Brewmaster",
+                "P5": "Venon",
+                "P4": "Venon",
+                "P3": "-",
+                "P2": "Earth Shaker",
+                "P1": "-"
+            }
+        },
+        {
+            "nombre": "LENTER",
+            "versatilidad": "Grado C",
+            "estado": "Activo",
+            "win": 4,
+            "loss": 4,
+            "ranking": 5,
+            "historial": {
+                "P8": "Shaman",
+                "P7": "Shaman",
+                "P6": "Lich",
+                "P5": "Aa",
+                "P4": "Lich",
+                "P3": "Shaman",
+                "P2": "Tide",
+                "P1": "Lich"
+            }
+        },
+        {
+            "nombre": "LIPI",
+            "versatilidad": "Grado B",
+            "estado": "Activo",
+            "win": 3,
+            "loss": 3,
+            "ranking": 6,
+            "historial": {
+                "P8": "Jugger",
+                "P7": "-",
+                "P6": "-",
+                "P5": "Centauro",
+                "P4": "Mirana",
+                "P3": "Ardilla",
+                "P2": "Ardilla",
+                "P1": "Ardilla"
+            }
+        },
+        {
+            "nombre": "MADJOCKER",
+            "versatilidad": "Grado A",
+            "estado": "Activo",
+            "win": 1,
+            "loss": 5,
+            "ranking": 7,
+            "historial": {
+                "P8": "Wk",
+                "P7": "Earth Shaker",
+                "P6": "Sandking",
+                "P5": "-",
+                "P4": "-",
+                "P3": "Lina",
+                "P2": "Slark",
+                "P1": "Sand King"
+            }
+        },
+        {
+            "nombre": "ERI CHAN",
+            "versatilidad": "Grado C",
+            "estado": "Activo",
+            "win": 6,
+            "loss": 1,
+            "ranking": 8,
+            "historial": {
+                "P8": "Pudge",
+                "P7": "Am",
+                "P6": "Am",
+                "P5": "Slark",
+                "P4": "Pudge",
+                "P3": "-",
+                "P2": "-",
+                "P1": "Pudge"
+            }
+        },
+        {
+            "nombre": "ROGER",
+            "versatilidad": "Grado B",
+            "estado": "Activo",
+            "win": 4,
+            "loss": 2,
+            "ranking": 9,
+            "historial": {
+                "P8": "-",
+                "P7": "Meppo",
+                "P6": "Pango",
+                "P5": "Clinks",
+                "P4": "Meppo",
+                "P3": "Invoker",
+                "P2": "Invoker",
+                "P1": "-"
+            }
+        },
+        {
+            "nombre": "PALOMA",
+            "versatilidad": "Grado B",
+            "estado": "Activo",
+            "win": 3,
+            "loss": 4,
+            "ranking": 10,
+            "historial": {
+                "P8": "Fenix",
+                "P7": "Warlock",
+                "P6": "Aa",
+                "P5": "Lich",
+                "P4": "-",
+                "P3": "Zombie",
+                "P2": "Zombie",
+                "P1": "Warlock"
+            }
+        },
+        {
+            "nombre": "SKYZER",
+            "versatilidad": "Grado D",
+            "estado": "Activo",
+            "win": 0,
+            "loss": 2,
+            "ranking": 11,
+            "historial": {
+                "P8": "-",
+                "P7": "-",
+                "P6": "-",
+                "P5": "Death Propet",
+                "P4": "Qop",
+                "P3": "-",
+                "P2": "-",
+                "P1": "-"
+            }
+        },
+        {
+            "nombre": "QUESILLO",
+            "versatilidad": "Grado D",
+            "estado": "Activo",
+            "win": 1,
+            "loss": 1,
+            "ranking": 12,
+            "historial": {
+                "P8": "-",
+                "P7": "-",
+                "P6": "-",
+                "P5": "-",
+                "P4": "-",
+                "P3": "Kunka",
+                "P2": "-",
+                "P1": "Fenix"
+            }
+        },
+        {
+            "nombre": "IPPO",
+            "versatilidad": "Grado D",
+            "estado": "Activo",
+            "win": 1,
+            "loss": 3,
+            "ranking": 13,
+            "historial": {
+                "P8": "Venge",
+                "P7": "Doctor",
+                "P6": "-",
+                "P5": "-",
+                "P4": "-",
+                "P3": "Doctor",
+                "P2": "Zombie",
+                "P1": "-"
+            }
+        },
+        {
+            "nombre": "FALCON",
+            "versatilidad": "Grado D",
+            "estado": "VETADO",
+            "win": 0,
+            "loss": 1,
+            "ranking": 14,
+            "historial": {
+                "P8": "-",
+                "P7": "-",
+                "P6": "-",
+                "P5": "-",
+                "P4": "Lion",
+                "P3": "-",
+                "P2": "-",
+                "P1": "-"
+            }
+        },
+        {
+            "nombre": "PAPIBARA",
+            "versatilidad": "Grado D",
+            "estado": "Activo",
+            "win": 0,
+            "loss": 1,
+            "ranking": 15,
+            "historial": {
+                "P8": "-",
+                "P7": "Shaman",
+                "P6": "-",
+                "P5": "-",
+                "P4": "-",
+                "P3": "-",
+                "P2": "-",
+                "P1": "-"
+            }
+        }
+    ]
+}
