@@ -59,10 +59,43 @@ app.post('/api/login', async (req, res) => {
     try {
         await conectarMongoDB();
         const { username, password } = req.body;
+        console.log(`Intento de login: ${username}`);
         const gameData = await Game.findOne();
+        
+        // Buscar en la DB
+        let user = gameData?.usuarios?.find(u => u.username === username && u.password === password);
+        
+        if (user) console.log("✓ Usuario encontrado en DB");
+
+        // Si no se encuentra el usuario en la DB, pero está en el archivo local (fallback de emergencia)
+        if (!user) {
+            console.log("...Buscando en data.json local");
+            const fs = require('fs');
+            try {
+                const dataJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8'));
+                user = dataJson.usuarios?.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    console.log("✓ Usuario encontrado en data.json");
+                    if (gameData) {
+                        if (!gameData.usuarios) gameData.usuarios = [];
+                        gameData.usuarios.push(user);
+                        await gameData.save();
+                        console.log("✓ Usuario sincronizado a MongoDB");
+                        dataCache = gameData;
+                    }
+                } else {
+                    console.log("✗ Usuario no encontrado en data.json");
+                }
+            } catch (e) {
+                console.error("Error leyendo data.json para login:", e);
+            }
+        }
+
         if (user) {
             res.json({ success: true, username: user.username });
         } else {
+            console.log("✗ Credenciales incorrectas");
             res.status(401).json({ success: false, error: 'Credenciales incorrectas' });
         }
     } catch (error) {
@@ -82,6 +115,7 @@ app.post('/api/partidas', async (req, res) => {
             winner: partida.ganador || partida.winner,
             mvp: partida.mvp,
             duracion: partida.duracion,
+            capitanes: partida.capitanes || { Dire: '', Radiant: '' },
             equipos: partida.equipos,
             historial: partida.historial
         };
@@ -148,6 +182,105 @@ app.put('/api/partidas/:id/mvp', async (req, res) => {
             res.status(404).json({ success: false, error: 'Partida no encontrada' });
         }
     } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.put('/api/partidas/:id', async (req, res) => {
+    try {
+        await conectarMongoDB();
+        const { id } = req.params;
+        const { partida, actualizarStats } = req.body;
+        
+        const gameData = await Game.findOne();
+        const oldPartidaIndex = gameData.partidas.findIndex(p => p.id === id);
+        
+        if (oldPartidaIndex === -1) {
+            return res.status(404).json({ success: false, error: 'Partida no encontrada' });
+        }
+        
+        const oldPartida = gameData.partidas[oldPartidaIndex];
+        
+        // 1. Revertir stats de la partida antigua
+        if (actualizarStats) {
+            const revertirStats = (equipo, ganador) => {
+                equipo.forEach(nombre => {
+                    const jugador = gameData.jugadores.find(j => j.nombre === nombre);
+                    if (jugador) {
+                        if (ganador === (equipo === oldPartida.equip.Dire ? 'Dire' : 'Dire')) { // Bug fix logic below
+                             // Logic: if they were on the winning team, decrement win. Else decrement loss.
+                        }
+                    }
+                });
+            };
+            
+            // Revertir Dire
+            oldPartida.equipos.Dire.forEach(nombre => {
+                const jugador = gameData.jugadores.find(j => j.nombre === nombre);
+                if (jugador) {
+                    if (oldPartida.winner === 'Dire') jugador.win--; else jugador.loss--;
+                    if (jugador.historial) {
+                        if (jugador.historial instanceof Map) jugador.historial.delete(id);
+                        else delete jugador.historial[id];
+                    }
+                }
+            });
+            // Revertir Radiant
+            oldPartida.equipos.Radiant.forEach(nombre => {
+                const jugador = gameData.jugadores.find(j => j.nombre === nombre);
+                if (jugador) {
+                    if (oldPartida.winner === 'Radiant') jugador.win--; else jugador.loss--;
+                    if (jugador.historial) {
+                        if (jugador.historial instanceof Map) jugador.historial.delete(id);
+                        else delete jugador.historial[id];
+                    }
+                }
+            });
+        }
+        
+        // 2. Actualizar datos de la partida
+        gameData.partidas[oldPartidaIndex] = {
+            id: id,
+            fecha: partida.fecha,
+            mapa: partida.mapa,
+            winner: partida.winner,
+            mvp: partida.mvp,
+            duracion: partida.duracion,
+            capitanes: partida.capitanes || { Dire: '', Radiant: '' },
+            equipos: partida.equipos,
+            historial: partida.historial
+        };
+        
+        // 3. Aplicar nuevas stats
+        if (actualizarStats) {
+            partida.equipos.Dire.forEach(nombre => {
+                const jugador = gameData.jugadores.find(j => j.nombre === nombre);
+                if (jugador) {
+                    if (partida.winner === 'Dire') jugador.win++; else jugador.loss++;
+                    if (!jugador.historial) jugador.historial = new Map();
+                    if (jugador.historial instanceof Map) jugador.historial.set(id, partida.historial[nombre]);
+                    else jugador.historial[id] = partida.historial[nombre];
+                }
+            });
+            partida.equipos.Radiant.forEach(nombre => {
+                const jugador = gameData.jugadores.find(j => j.nombre === nombre);
+                if (jugador) {
+                    if (partida.winner === 'Radiant') jugador.win++; else jugador.loss++;
+                    if (!jugador.historial) jugador.historial = new Map();
+                    if (jugador.historial instanceof Map) jugador.historial.set(id, partida.historial[nombre]);
+                    else jugador.historial[id] = partida.historial[nombre];
+                }
+            });
+        }
+        
+        gameData.markModified('partidas');
+        gameData.markModified('jugadores');
+        await gameData.save();
+        dataCache = gameData;
+        res.json({ success: true, message: 'Partida actualizada y stats recalculadas' });
+        
+    } catch (error) {
+        console.error('Error actualizando partida:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });

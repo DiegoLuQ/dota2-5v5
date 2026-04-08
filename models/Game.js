@@ -23,6 +23,10 @@ const PartidaSchema = new mongoose.Schema({
     winner: String,
     mvp: String,
     duracion: String,
+    capitanes: {
+        Dire: { type: String, default: '' },
+        Radiant: { type: String, default: '' }
+    },
     equipos: {
         Dire: [String],
         Radiant: [String]

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigos5v5 - Dota 2 Stats</title>
+    <title>Dota 2 5vs5 - Stats</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,7 +21,7 @@
             }
         }
 function toggleMobileMenu() {
-    const sidebar = document.getElementById('sidebar');
+    const sidebar = document.getElementById('sidebar-left');
     sidebar.classList.toggle('hidden');
 }
     </script>
@@ -49,134 +49,105 @@ function toggleMobileMenu() {
 
     <!-- New Match Modal -->
     <div id="newMatchModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden overflow-auto">
-        <div class="bg-dotadark border-2 border-dotagold p-6 rounded-lg w-full max-w-4xl mx-4 my-8 shadow-2xl">
-            <h2 class="text-2xl text-dotagold font-bold text-center mb-6">NUEVA PARTIDA</h2>
+        <div class="bg-dotadark border border-dotagold p-4 rounded-lg w-full max-w-4xl mx-4 my-4 shadow-2xl">
+            <h2 id="modalTitle" class="text-xl text-dotagold font-bold text-center mb-3 uppercase tracking-tighter">EDITAR PARTIDA</h2>
             
-            <form id="newMatchForm" class="space-y-4">
-                <!-- Basic Info -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form id="newMatchForm" class="space-y-3">
+                <!-- Basic Info + Captains -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-2 bg-dotablack bg-opacity-30 p-2 rounded border border-gray-800">
                     <div>
-                        <label class="block text-dotagold text-sm mb-1">Fecha</label>
+                        <label class="block text-dotagold text-[10px] uppercase font-bold mb-1 opacity-70">Fecha</label>
                         <input type="date" id="matchDate" required
-                            class="w-full bg-dotagray border border-gray-600 rounded px-3 py-2 focus:border-dotagold focus:outline-none text-white">
+                            class="w-full bg-dotagray border border-gray-700 rounded px-1.5 py-0.5 focus:border-dotagold focus:outline-none text-white text-[11px]">
                     </div>
                     <div>
-                        <label class="block text-dotagold text-sm mb-1">Mapa</label>
-                        <select id="matchMap" class="w-full bg-dotagray border border-gray-600 rounded px-3 py-2 focus:border-dotagold focus:outline-none text-white">
-                            <option value="Warcraft 3">Warcraft 3</option>
-                            <option value="Dota 2 Original">Dota 2 Original</option>
-                            <option value="Dota 2 Reborn">Dota 2 Reborn</option>
+                        <label class="block text-dotagold text-[10px] uppercase font-bold mb-1 opacity-70">Mapa / Tipo</label>
+                        <select id="matchMap" class="w-full bg-dotagray border border-gray-700 rounded px-1.5 py-0.5 focus:border-dotagold focus:outline-none text-white text-[11px]">
+                            <option value="Lobby">Lobby</option>
+                            <option value="Ranked">Ranked</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-dotagold text-sm mb-1">Duración</label>
-                        <div class="flex gap-2">
-                            <input type="number" id="matchHours" min="0" max="3" placeholder="hr" value="0"
-                                class="w-full bg-dotagray border border-gray-600 rounded px-2 py-2 focus:border-dotagold focus:outline-none text-white text-center">
-                            <input type="number" id="matchMinutes" min="0" max="59" placeholder="min" value="0"
-                                class="w-full bg-dotagray border border-gray-600 rounded px-2 py-2 focus:border-dotagold focus:outline-none text-white text-center">
-                            <input type="number" id="matchSeconds" min="0" max="59" placeholder="seg" value="0"
-                                class="w-full bg-dotagray border border-gray-600 rounded px-2 py-2 focus:border-dotagold focus:outline-none text-white text-center">
+                    <div class="md:col-span-2">
+                        <label class="block text-dotagold text-[10px] uppercase font-bold mb-1 opacity-70">Duración (H:M:S)</label>
+                        <div class="flex gap-1.5">
+                            <input type="number" id="matchHours" min="0" max="3" placeholder="h" value="0"
+                                class="w-full bg-dotagray border border-gray-700 rounded px-1 py-0.5 focus:border-dotagold focus:outline-none text-white text-center text-[11px]">
+                            <input type="number" id="matchMinutes" min="0" max="59" placeholder="m" value="0"
+                                class="w-full bg-dotagray border border-gray-700 rounded px-1 py-0.5 focus:border-dotagold focus:outline-none text-white text-center text-[11px]">
+                            <input type="number" id="matchSeconds" min="0" max="59" placeholder="s" value="0"
+                                class="w-full bg-dotagray border border-gray-700 rounded px-1 py-0.5 focus:border-dotagold focus:outline-none text-white text-center text-[11px]">
                         </div>
                     </div>
-                </div>
-
-                <!-- Captains -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-dotagold text-sm mb-1">Capitán DIRE (Rojo)</label>
-                        <select id="captainDire" onchange="updateAvailablePlayers()"
-                            class="w-full bg-dotagray border border-gray-600 rounded px-3 py-2 focus:border-dotagold focus:outline-none text-white">
+                    <div class="md:col-span-2">
+                        <label class="block text-blue-500 text-[10px] uppercase font-bold mb-1">Capitán RADIANT</label>
+                        <select id="captainRadiant" onchange="updateAvailablePlayers()"
+                            class="w-full bg-dotagray border border-gray-700 rounded px-1.5 py-0.5 focus:border-dotagold focus:outline-none text-white text-[11px]">
                             <option value="">Seleccionar Capitán</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-blue-400 text-sm mb-1">Capitán RADIANT (Azul)</label>
-                        <select id="captainRadiant" onchange="updateAvailablePlayers()"
-                            class="w-full bg-dotagray border border-gray-600 rounded px-3 py-2 focus:border-dotagold focus:outline-none text-white">
+                    <div class="md:col-span-2">
+                        <label class="block text-red-500 text-[10px] uppercase font-bold mb-1">Capitán DIRE</label>
+                        <select id="captainDire" onchange="updateAvailablePlayers()"
+                            class="w-full bg-dotagray border border-gray-700 rounded px-1.5 py-0.5 focus:border-dotagold focus:outline-none text-white text-[11px]">
                             <option value="">Seleccionar Capitán</option>
                         </select>
                     </div>
                 </div>
 
                 <!-- Teams Selection -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Available Players -->
+                <div class="grid grid-cols-1 gap-2">
                     <div>
-                        <label class="block text-gray-400 text-sm mb-1">Jugadores Disponibles</label>
-                        <div id="availablePlayers" class="bg-dotagray rounded p-2 max-h-48 overflow-y-auto space-y-1">
-                            <!-- Players will be injected here -->
-                        </div>
+                        <label class="block text-gray-500 text-[10px] uppercase font-bold mb-1">Jugadores Disponibles</label>
+                        <div id="availablePlayers" class="flex flex-wrap gap-1.5 bg-dotagray bg-opacity-20 rounded p-2 min-h-[40px] border border-gray-800"></div>
                     </div>
                     
-                    <!-- Dire Team -->
-                    <div>
-                        <label class="block text-red-400 text-sm mb-1">Equipo DIRE (5 jugadores)</label>
-                        <div id="teamDire" class="bg-dotadark border border-red-800 rounded p-2 min-h-[200px] max-h-48 overflow-y-auto space-y-1">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-dotablack bg-opacity-20 border border-blue-900 border-opacity-20 rounded p-2">
+                            <label class="block text-blue-600 font-bold text-[10px] uppercase tracking-tighter mb-1.5 border-b border-blue-900 border-opacity-10">RADIANT</label>
+                            <div id="teamRadiant" class="space-y-1.5"></div>
                         </div>
-                    </div>
-                    
-                    <!-- Radiant Team -->
-                    <div>
-                        <label class="block text-blue-400 text-sm mb-1">Equipo RADIANT (5 jugadores)</label>
-                        <div id="teamRadiant" class="bg-dotadark border border-blue-800 rounded p-2 min-h-[200px] max-h-48 overflow-y-auto space-y-1">
+                        
+                        <div class="bg-dotablack bg-opacity-20 border border-red-900 border-opacity-20 rounded p-2">
+                            <label class="block text-red-600 font-bold text-[10px] uppercase tracking-tighter mb-1.5 border-b border-red-900 border-opacity-10">DIRE</label>
+                            <div id="teamDire" class="space-y-1.5"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Heroes Assignment -->
-                <div id="heroesSection" class="hidden">
-                    <h3 class="text-dotagold font-bold mb-2">Asignar Héroes</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-dotadark border border-red-800 rounded p-3">
-                            <h4 class="text-red-400 font-bold text-sm mb-2">Equipo DIRE</h4>
-                            <div id="heroesDire" class="space-y-2"></div>
-                        </div>
-                        <div class="bg-dotadark border border-blue-800 rounded p-3">
-                            <h4 class="text-blue-400 font-bold text-sm mb-2">Equipo RADIANT</h4>
-                            <div id="heroesRadiant" class="space-y-2"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Winner & MVP -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-dotagold text-sm mb-2">Ganador</label>
+                <!-- Footer Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-gray-800">
+                    <div class="flex items-center gap-4">
+                        <label class="text-dotagold text-[10px] uppercase font-bold opacity-70">Ganador:</label>
                         <div class="flex gap-4">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="winner" value="Dire" class="mr-2 accent-red-500">
-                                <span class="text-red-400 font-bold">DIRE</span>
+                            <label class="inline-flex items-center cursor-pointer group">
+                                <input type="radio" name="winner" value="Dire" class="hidden peer">
+                                <div class="w-4 h-4 border-2 border-gray-600 rounded-full peer-checked:border-red-500 peer-checked:bg-red-500 transition-all"></div>
+                                <span class="ml-1.5 text-[11px] text-gray-500 peer-checked:text-red-400 font-bold">DIRE</span>
                             </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="winner" value="Radiant" class="mr-2 accent-blue-500">
-                                <span class="text-blue-400 font-bold">RADIANT</span>
+                            <label class="inline-flex items-center cursor-pointer group">
+                                <input type="radio" name="winner" value="Radiant" class="hidden peer">
+                                <div class="w-4 h-4 border-2 border-gray-600 rounded-full peer-checked:border-blue-500 peer-checked:bg-blue-500 transition-all"></div>
+                                <span class="ml-1.5 text-[11px] text-gray-500 peer-checked:text-blue-400 font-bold">RADIANT</span>
                             </label>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-dotagold text-sm mb-1">MVP (opcional)</label>
-                        <select id="matchMVP"
-                            class="w-full bg-dotagray border border-gray-600 rounded px-3 py-2 focus:border-dotagold focus:outline-none text-white">
+                    <div class="flex items-center gap-2">
+                        <label class="text-dotagold text-[10px] uppercase font-bold opacity-70 whitespace-nowrap">MVP:</label>
+                        <select id="matchMVP" 
+                            class="w-full bg-dotagray border border-gray-700 rounded px-2 py-0.5 focus:border-dotagold focus:outline-none text-white text-[11px]">
                             <option value="-">Sin MVP</option>
                         </select>
                     </div>
-                    <div class="flex items-end">
-                        <button type="button" onclick="proceedToHeroes()" id="btnProceedHeroes"
-                            class="w-full bg-dotagold text-dotablack font-bold py-2 rounded hover:bg-yellow-600 transition-colors" disabled>
-                           SIGUIENTE: HÉROES →
-                        </button>
-                    </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex gap-4 pt-4 border-t border-gray-700">
-                    <button type="button" onclick="saveNewMatch()" id="btnSaveMatch"
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition-colors hidden">
-                        GUARDAR PARTIDA
+                <!-- Action Buttons -->
+                <div class="flex gap-2 pt-2">
+                    <button type="button" id="btnSaveMatch" onclick="saveNewMatch()"
+                        class="flex-1 bg-dotagold hover:bg-yellow-600 text-dotablack font-black py-2 rounded transition-all shadow uppercase text-xs disabled:opacity-30" disabled>
+                        GUARDAR BATALLA
                     </button>
                     <button type="button" onclick="closeNewMatchModal()" 
-                        class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 rounded transition-colors">
+                        class="px-6 bg-dotagray hover:bg-gray-700 text-white font-bold py-2 rounded transition-colors uppercase text-[11px]">
                         CANCELAR
                     </button>
                 </div>
@@ -207,10 +178,10 @@ function toggleMobileMenu() {
     </div>
 
     <!-- Main Container -->
-    <div class="flex flex-col md:flex-row min-h-screen">
+    <div class="flex flex-col lg:flex-row min-h-screen">
         <!-- Mobile Header -->
-        <header class="md:hidden bg-dotadark border-b border-dotagold p-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-dotagold">AMIGOS5v5</h1>
+        <header class="lg:hidden bg-dotadark border-b border-dotagold p-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-dotagold uppercase tracking-tighter">Dota 2 5vs5</h1>
             <button onclick="toggleMobileMenu()" class="text-dotagold">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -218,77 +189,134 @@ function toggleMobileMenu() {
             </button>
         </header>
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="w-full md:w-64 bg-dotadark border-r border-dotagold flex-col hidden md:flex">
+        <!-- Sidebar LEFT (Stats & Login) -->
+        <aside id="sidebar-left" class="w-full lg:w-72 bg-dotadark border-r border-dotagold flex-col hidden lg:flex">
             <!-- Logo -->
-            <div class="p-4 border-b border-dotagray">
-                <h1 class="text-2xl font-bold text-dotagold text-center hidden md:block">AMIGOS5v5</h1>
-                <p class="text-xs text-gray-500 text-center hidden md:block">Dota 2 Stats</p>
+            <div class="p-6 border-b border-dotagray">
+                <h1 class="text-2xl font-bold text-dotagold text-center hidden lg:block uppercase tracking-tighter">Dota 2 5vs5</h1>
+                <p class="text-xs text-gray-500 text-center hidden lg:block italic">Battle of Ancients</p>
             </div>
 
-            <!-- Login Button / User Info -->
-            <div class="p-4 border-b border-dotagray">
+            <!-- Login Section -->
+            <div class="p-6 border-b border-dotagray bg-dotablack bg-opacity-30">
                 <div id="loginSection">
                     <button onclick="openLogin()" 
-                        class="w-full bg-dotagold text-dotablack font-bold py-2 rounded hover:bg-yellow-600 transition-colors">
+                        class="w-full bg-dotagold text-dotablack font-bold py-2 rounded hover:bg-yellow-600 transition-colors shadow-lg">
                         LOGIN ADMIN
                     </button>
-                    <p class="text-xs text-gray-500 text-center mt-2">Solo admins pueden votar MVP</p>
+                    <p class="text-[10px] text-gray-500 text-center mt-2 uppercase">SOLO ADMINS PUEDEN GESTIONAR</p>
                 </div>
                 <div id="userSection" class="hidden">
-                    <p class="text-dotagold text-center font-bold" id="userName"></p>
-                    <button onclick="logout()" class="text-xs text-gray-500 hover:text-white mt-1 block w-full text-center">CERRAR SESIÓN</button>
+                    <div class="flex items-center gap-3 justify-center">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <p class="text-dotagold font-bold uppercase text-sm" id="userName"></p>
+                    </div>
+                    <button onclick="logout()" class="text-[10px] text-gray-500 hover:text-white mt-1 block w-full text-center uppercase tracking-widest">CERRAR SESIÓN</button>
                 </div>
             </div>
 
-            <!-- Players List -->
-            <div class="flex-1 overflow-y-auto p-4">
-                <h3 class="text-dotagold font-bold mb-3">JUGADORES</h3>
-                <div id="playersList" class="space-y-2">
-                    <!-- Players will be injected here -->
+            <!-- Stats Summary (Advanced) -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div>
+                    <h3 class="text-dotagold font-bold mb-4 text-xs tracking-widest uppercase border-b border-dotagold border-opacity-30 pb-1">RESUMEN DE TEMPORADA</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-gray-500 text-xs uppercase">Partidas:</span>
+                            <span class="text-white font-bold font-mono text-lg" id="totalGames">0</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="bg-red-900 bg-opacity-20 p-2 rounded border border-red-900 border-opacity-30 text-center">
+                                <p class="text-[10px] text-red-400 uppercase">DIRE</p>
+                                <p class="text-xl font-bold text-red-500" id="direWins">0</p>
+                            </div>
+                            <div class="bg-blue-900 bg-opacity-20 p-2 rounded border border-blue-900 border-opacity-30 text-center">
+                                <p class="text-[10px] text-blue-400 uppercase">RADIANT</p>
+                                <p class="text-xl font-bold text-blue-500" id="radiantWins">0</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Stats Summary -->
-            <div class="p-4 border-t border-dotagray">
-                <h3 class="text-dotagold font-bold mb-2">RESUMEN</h3>
-                <div class="text-sm space-y-1">
-                    <p>Partidas: <span class="text-dotagold" id="totalGames">0</span></p>
-                    <p>Victorias Dire: <span class="text-dotared" id="direWins">0</span></p>
-                    <p>Victorias Radiant: <span class="text-blue-400" id="radiantWins">0</span></p>
+                <div class="pt-4 border-t border-dotagray space-y-4">
+                    <div class="bg-dotagray bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                        <p class="text-[10px] text-gray-500 uppercase mb-1">Héroe más pickeado</p>
+                        <p id="topHero" class="text-white font-bold text-sm">-</p>
+                    </div>
+                    
+                    <div class="bg-dotagray bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                        <p class="text-[10px] text-gray-500 uppercase mb-1">Partida más larga</p>
+                        <p id="longestMatch" class="text-white font-bold text-sm">-</p>
+                        <p id="longestMatchTime" class="text-[10px] text-dotagold font-mono pt-1"></p>
+                    </div>
+
+                    <div class="bg-dotagray bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                        <p class="text-[10px] text-gray-500 uppercase mb-1">Héroe MVP</p>
+                        <div class="flex justify-between items-end">
+                            <span id="topMVPHero" class="text-white font-bold text-sm">-</span>
+                            <span id="topMVPHeroCount" class="text-dotagold font-bold text-xs font-mono">0 MVPs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-dotagray bg-opacity-50 p-3 rounded-lg border border-gray-800">
+                        <p class="text-[10px] text-gray-500 uppercase mb-1">Jugador MVP</p>
+                        <div class="flex justify-between items-end">
+                            <span id="topMVPPlayer" class="text-white font-bold text-sm">-</span>
+                            <span id="topMVPPlayerCount" class="text-dotagold font-bold text-xs font-mono">0 MVPs</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Mantencion Button (Admin only) -->
-            <div id="mantencionSection" class="p-4 border-t border-dotagray hidden">
+            <div id="mantencionSection" class="p-6 border-t border-dotagray hidden bg-dotablack bg-opacity-50">
                 <button onclick="openMantencionModal()" 
-                    class="w-full bg-dotagray hover:bg-dotagold hover:text-dotablack text-gray-300 font-bold py-2 rounded transition-colors text-sm">
+                    class="w-full bg-dotagray hover:bg-dotagold hover:text-dotablack text-gray-300 font-bold py-2 rounded transition-colors text-xs uppercase tracking-widest">
                     ⚙️ Mantención
                 </button>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-6 overflow-y-auto">
+        <main class="flex-1 p-4 lg:p-10 overflow-y-auto">
+            <!-- Mobile Ranking -->
+            <div id="mobileRanking" class="lg:hidden mb-10">
+                <h3 class="text-dotagold font-bold mb-4 flex items-center gap-2 text-lg uppercase tracking-widest">
+                    🏆 RANKING DE JUGADORES
+                </h3>
+                <div id="playersListMobile" class="space-y-3">
+                    <!-- Players injected here -->
+                </div>
+            </div>
+
             <!-- Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3">
-                <h2 class="text-2xl md:text-3xl font-bold text-dotagold">HISTORIAL DE PARTIDAS</h2>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <h2 class="text-3xl font-bold text-dotagold uppercase tracking-tight">Historial de <span class="text-white">Batallas</span></h2>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button id="btnNewMatch" onclick="openNewMatchModal()" 
-                        class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors text-sm">
+                        class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded transition-colors text-sm uppercase">
                         + Nueva Partida
                     </button>
-                    <select id="filterPlayer" onchange="filterByPlayer()" class="bg-dotagray border border-gray-600 rounded px-3 py-2 text-sm focus:border-dotagold focus:outline-none flex-1 sm:flex-none">
-                        <option value="">Todos los jugadores</option>
+                    <select id="filterPlayer" onchange="filterByPlayer()" class="bg-dotagray border border-gray-600 rounded px-4 py-2 text-sm focus:border-dotagold focus:outline-none flex-1 lg:flex-none text-white">
+                        <option value="">TODOS LOS JUGADORES</option>
                     </select>
                 </div>
             </div>
 
             <!-- Matches -->
-            <div id="matchesList" class="space-y-4">
-                <!-- Matches will be injected here -->
+            <div id="matchesList" class="space-y-6">
+                <!-- Matches injected here -->
             </div>
         </main>
+
+        <!-- Sidebar RIGHT (Ranking) -->
+        <aside id="sidebar-right" class="w-full lg:w-80 bg-dotadark border-l border-dotagold flex-col hidden lg:flex">
+            <div class="p-6 border-b border-dotagray">
+                <h3 class="text-dotagold font-bold text-center text-xs tracking-[0.2em] uppercase">RANKING DE JUGADORES</h3>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-2" id="playersList">
+                <!-- Players injected here -->
+            </div>
+        </aside>
     </div>
 
     <script src="main.js"></script>
