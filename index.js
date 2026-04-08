@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const Game = require('./models/Game');
@@ -8,7 +9,7 @@ const Game = require('./models/Game');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 let dataCache = null;
 
@@ -179,6 +180,11 @@ app.put('/api/jugadores/:nombre', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
+});
+
+// Servir el frontend para cualquier otra ruta
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Conectar a MongoDB inmediatamente
