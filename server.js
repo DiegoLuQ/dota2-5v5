@@ -179,10 +179,15 @@ app.put('/api/jugadores/:nombre', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
+// Export for Vercel
+module.exports = app;
 
-conectarMongoDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`✓ Servidor en http://localhost:${PORT}`);
+// Start server locally
+if (process.env.VERCEL === undefined) {
+    const PORT = process.env.PORT || 3000;
+    conectarMongoDB().then(() => {
+        app.listen(PORT, () => {
+            console.log(`✓ Servidor en http://localhost:${PORT}`);
+        });
     });
-});
+}

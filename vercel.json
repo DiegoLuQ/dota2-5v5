@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm install",
+  "installCommand": "npm install",
+  "framework": "express",
+  "outputDirectory": "public"
+}
