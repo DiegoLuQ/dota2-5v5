@@ -14,6 +14,8 @@ let dataCache = null;
 
 async function conectarMongoDB() {
     try {
+        if (mongoose.connection.readyState === 1) return dataCache;
+
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('✓ Conectado a MongoDB');
         
@@ -27,15 +29,15 @@ async function conectarMongoDB() {
             gameData = new Game(dataJson);
             await gameData.save();
             console.log('✓ Datos cargados a MongoDB');
-        } else {
-            console.log('✓ Datos ya existen en MongoDB');
         }
         
         dataCache = gameData;
         return gameData;
     } catch (error) {
         console.error('Error conectando a MongoDB:', error.message);
-        process.exit(1);
+        if (process.env.VERCEL === undefined) {
+            process.exit(1);
+        }
     }
 }
 
@@ -179,15 +181,16 @@ app.put('/api/jugadores/:nombre', async (req, res) => {
     }
 });
 
+// Conectar a MongoDB inmediatamente
+conectarMongoDB();
+
 // Export for Vercel
 module.exports = app;
 
 // Start server locally
 if (process.env.VERCEL === undefined) {
     const PORT = process.env.PORT || 3000;
-    conectarMongoDB().then(() => {
-        app.listen(PORT, () => {
-            console.log(`✓ Servidor en http://localhost:${PORT}`);
-        });
+    app.listen(PORT, () => {
+        console.log(`✓ Servidor en http://localhost:${PORT}`);
     });
 }
