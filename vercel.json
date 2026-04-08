@@ -2,5 +2,11 @@
   "buildCommand": "npm install",
   "installCommand": "npm install",
   "framework": "express",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.js"
+    }
+  ]
 }
