@@ -7,7 +7,7 @@ let filterPlayer = null;
 // Cargar datos al iniciar
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch('data.json');
+        const response = await fetch('/api/data');
         data = await response.json();
         
         renderPlayersList();
@@ -33,20 +33,30 @@ function closeLogin() {
     document.getElementById('password').value = '';
 }
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     
-    const user = data.usuarios.find(u => u.username === username && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        localStorage.setItem('amigos5v5_session', JSON.stringify(user));
-        closeLogin();
-        updateLoginUI();
-        renderMatches();
-    } else {
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            currentUser = { username: result.username };
+            localStorage.setItem('amigos5v5_session', JSON.stringify(currentUser));
+            closeLogin();
+            updateLoginUI();
+            renderMatches();
+        } else {
+            document.getElementById('loginError').classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error en login:', error);
         document.getElementById('loginError').classList.remove('hidden');
     }
 });
@@ -69,14 +79,20 @@ function checkSession() {
 function updateLoginUI() {
     const loginSection = document.getElementById('loginSection');
     const userSection = document.getElementById('userSection');
+    const newMatchBtn = document.getElementById('btnNewMatch');
+    const mantencionSection = document.getElementById('mantencionSection');
     
     if (currentUser) {
         loginSection.classList.add('hidden');
         userSection.classList.remove('hidden');
         document.getElementById('userName').textContent = currentUser.username;
+        newMatchBtn.classList.remove('hidden');
+        mantencionSection.classList.remove('hidden');
     } else {
         loginSection.classList.remove('hidden');
         userSection.classList.add('hidden');
+        newMatchBtn.classList.add('hidden');
+        mantencionSection.classList.add('hidden');
     }
 }
 
@@ -97,8 +113,16 @@ function renderPlayersList() {
     container.innerHTML = sortedPlayers
     .map((j, idx) => `
         <div class="player-item p-2 rounded cursor-pointer flex items-center justify-between text-sm" onclick="selectPlayer('${j.nombre}')">
-            <div class="flex items-center gap-1">
-                <span class="text-base">${getMedal(idx)}</span>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                    <img src="${j.imagen || 'https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=' + j.nombre.charAt(0)}" 
+                         alt="${j.nombre}" 
+                         class="player-avatar w-full h-full object-cover"
+                         onerror="this.src='https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=${j.nombre.charAt(0)}'">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-base">${getMedal(idx)}</span>
+                </div>
                 <span class="font-bold text-white text-xs sm:text-sm">${j.nombre}</span>
             </div>
             <div class="flex gap-2">
@@ -135,14 +159,12 @@ function filterByPlayer() {
 function renderMatches() {
     const container = document.getElementById('matchesList');
     
-    // Ordenar por fecha más reciente
     let partidas = [...data.partidas].sort((a, b) => {
         const dateA = new Date(a.fecha.split('/').reverse().join('-'));
         const dateB = new Date(b.fecha.split('/').reverse().join('-'));
         return dateB - dateA;
     });
     
-    // Filtrar por jugador
     if (filterPlayer) {
         partidas = partidas.filter(p => 
             p.equipos.Dire.includes(filterPlayer) || 
@@ -234,24 +256,48 @@ function renderVoteButtons(partida) {
     `;
 }
 
-// === VOTING SYSTEM ===
+// === MVP SYSTEM ===
 
-function setMVP(partidaId, jugador) {
+async function setMVP(partidaId, jugador) {
     if (!currentUser) return;
     
-    const partida = data.partidas.find(p => p.id === partidaId);
-    partida.mvp = jugador;
-    
-    renderMatches();
+    try {
+        const response = await fetch(`/api/partidas/${partidaId}/mvp`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mvp: jugador })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const partida = data.partidas.find(p => p.id === partidaId);
+            if (partida) partida.mvp = jugador;
+            renderMatches();
+        }
+    } catch (error) {
+        console.error('Error estableciendo MVP:', error);
+    }
 }
 
-function resetMVP(partidaId) {
+async function resetMVP(partidaId) {
     if (!currentUser) return;
     
-    const partida = data.partidas.find(p => p.id === partidaId);
-    partida.mvp = '-';
-    
-    renderMatches();
+    try {
+        const response = await fetch(`/api/partidas/${partidaId}/mvp`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mvp: '-' })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const partida = data.partidas.find(p => p.id === partidaId);
+            if (partida) partida.mvp = '-';
+            renderMatches();
+        }
+    } catch (error) {
+        console.error('Error reset MVP:', error);
+    }
 }
 
 // === FILTER & STATS ===
@@ -410,7 +456,7 @@ function proceedToHeroes() {
     document.getElementById('heroesRadiant').innerHTML = renderHeroInputs('radiant', newMatchData.radiant);
 }
 
-function saveNewMatch() {
+async function saveNewMatch() {
     const fecha = document.getElementById('matchDate').value;
     const map = document.getElementById('matchMap').value;
     const hours = parseInt(document.getElementById('matchHours').value) || 0;
@@ -448,7 +494,7 @@ function saveNewMatch() {
         id: partidaId,
         fecha: fechaFormatted,
         mapa: map,
-        ganador: winner,
+        winner: winner,
         mvp: mvp || '-',
         duracion: duracion,
         equipos: {
@@ -458,61 +504,106 @@ function saveNewMatch() {
         historial: heroes
     };
     
-    data.partidas.unshift(newMatch);
-    
-    newMatchData.dire.forEach(j => {
-        const jugador = data.jugadores.find(x => x.nombre === j);
-        if (jugador) {
-            if (winner === 'Dire') {
-                jugador.win++;
-            } else {
-                jugador.loss++;
-            }
-            jugador.historial[partidaId] = heroes[j];
+    try {
+        const response = await fetch('/api/partidas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ partida: newMatch, actualizarStats: true })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const responseData = await fetch('/api/data');
+            data = await responseData.json();
+            
+            closeNewMatchModal();
+            renderMatches();
+            renderPlayersList();
+            updateStats();
+            alert(`¡Partida ${partidaId} guardada!`);
+        } else {
+            alert('Error al guardar: ' + result.error);
         }
-    });
-    
-    newMatchData.radiant.forEach(j => {
-        const jugador = data.jugadores.find(x => x.nombre === j);
-        if (jugador) {
-            if (winner === 'Radiant') {
-                jugador.win++;
-            } else {
-                jugador.loss++;
-            }
-            jugador.historial[partidaId] = heroes[j];
-        }
-    });
-    
-    fetch('data.json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    }).then(() => {
-        closeNewMatchModal();
-        renderMatches();
-        renderPlayersList();
-        updateStats();
-        alert(`¡Partida ${partidaId} guardada!`);
-    }).catch(err => {
-        console.error('Error guardando:', err);
+    } catch (error) {
+        console.error('Error guardando:', error);
         alert('Error al guardar la partida');
-    });
+    }
 }
 
-function updateLoginUI() {
-    const loginSection = document.getElementById('loginSection');
-    const userSection = document.getElementById('userSection');
-    const newMatchBtn = document.getElementById('btnNewMatch');
+// === MANTENCION ===
+
+function openMantencionModal() {
+    document.getElementById('mantencionModal').classList.remove('hidden');
+    renderMantencionList();
+}
+
+function closeMantencionModal() {
+    document.getElementById('mantencionModal').classList.add('hidden');
+}
+
+function renderMantencionList() {
+    const container = document.getElementById('mantencionList');
     
-    if (currentUser) {
-        loginSection.classList.add('hidden');
-        userSection.classList.remove('hidden');
-        document.getElementById('userName').textContent = currentUser.username;
-        newMatchBtn.classList.remove('hidden');
-    } else {
-        loginSection.classList.remove('hidden');
-        userSection.classList.add('hidden');
-        newMatchBtn.classList.add('hidden');
+    container.innerHTML = data.jugadores.map(j => `
+        <div class="flex items-center gap-4 p-3 bg-dotagray rounded">
+            <div class="w-12 h-12 rounded-full overflow-hidden bg-dotadark flex-shrink-0">
+                <img src="${j.imagen || 'https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=' + j.nombre.charAt(0)}" 
+                     alt="${j.nombre}" 
+                     class="player-avatar w-full h-full object-cover"
+                     onerror="this.src='https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=${j.nombre.charAt(0)}'">
+            </div>
+            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Nombre</label>
+                    <input type="text" data-nombre="${j.nombre}" value="${j.nombre}" 
+                        class="w-full bg-dotadark border border-gray-600 rounded px-2 py-1 text-white text-sm nombre-input">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">URL Imagen</label>
+                    <input type="text" data-nombre="${j.nombre}" value="${j.imagen || ''}" 
+                        placeholder="https://..." 
+                        class="w-full bg-dotadark border border-gray-600 rounded px-2 py-1 text-white text-sm imagen-input">
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function saveMantencion() {
+    const nombreInputs = document.querySelectorAll('.nombre-input');
+    const imagenInputs = document.querySelectorAll('.imagen-input');
+    
+    let savedCount = 0;
+    
+    for (let i = 0; i < nombreInputs.length; i++) {
+        const oldNombre = nombreInputs[i].dataset.nombre;
+        const nuevoNombre = nombreInputs[i].value.trim();
+        const imagen = imagenInputs[i].value.trim();
+        
+        if (nuevoNombre !== oldNombre || imagen !== '') {
+            try {
+                const response = await fetch(`/api/jugadores/${encodeURIComponent(oldNombre)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nuevoNombre, imagen })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    savedCount++;
+                }
+            } catch (error) {
+                console.error('Error guardando jugador:', oldNombre, error);
+            }
+        }
     }
+    
+    const responseData = await fetch('/api/data');
+    data = await responseData.json();
+    
+    closeMantencionModal();
+    renderPlayersList();
+    renderMatches();
+    renderFilter();
+    alert(`¡${savedCount} cambios guardados!`);
 }

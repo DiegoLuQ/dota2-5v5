@@ -21,9 +21,9 @@
             }
         }
 function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
-        }
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('hidden');
+}
     </script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -184,6 +184,28 @@ function toggleMobileMenu() {
         </div>
     </div>
 
+    <!-- Mantencion Modal -->
+    <div id="mantencionModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden overflow-auto">
+        <div class="bg-dotadark border-2 border-dotagold p-6 rounded-lg w-full max-w-3xl mx-4 my-8 shadow-2xl">
+            <h2 class="text-2xl text-dotagold font-bold text-center mb-6">⚙️ MANTENCIÓN DE JUGADORES</h2>
+            
+            <div id="mantencionList" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                <!-- Players will be injected here -->
+            </div>
+            
+            <div class="flex gap-4 pt-4 border-t border-gray-700 mt-4">
+                <button onclick="saveMantencion()" 
+                    class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition-colors">
+                    GUARDAR CAMBIOS
+                </button>
+                <button onclick="closeMantencionModal()" 
+                    class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 rounded transition-colors">
+                    CANCELAR
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Container -->
     <div class="flex flex-col md:flex-row min-h-screen">
         <!-- Mobile Header -->
@@ -235,6 +257,14 @@ function toggleMobileMenu() {
                     <p>Victorias Dire: <span class="text-dotared" id="direWins">0</span></p>
                     <p>Victorias Radiant: <span class="text-blue-400" id="radiantWins">0</span></p>
                 </div>
+            </div>
+
+            <!-- Mantencion Button (Admin only) -->
+            <div id="mantencionSection" class="p-4 border-t border-dotagray hidden">
+                <button onclick="openMantencionModal()" 
+                    class="w-full bg-dotagray hover:bg-dotagold hover:text-dotablack text-gray-300 font-bold py-2 rounded transition-colors text-sm">
+                    ⚙️ Mantención
+                </button>
             </div>
         </aside>
 
