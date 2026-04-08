@@ -25,7 +25,7 @@ async function conectarMongoDB() {
         if (!gameData) {
             console.log('Cargando datos iniciales desde data.json...');
             const fs = require('fs');
-            const dataJson = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+            const dataJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8'));
             
             gameData = new Game(dataJson);
             await gameData.save();
@@ -42,28 +42,37 @@ async function conectarMongoDB() {
     }
 }
 
-app.get('/api/data', (req, res) => {
-    if (dataCache) {
-        res.json(dataCache);
-    } else {
-        res.status(500).json({ error: 'Datos no disponibles' });
+app.get('/api/data', async (req, res) => {
+    try {
+        const gameData = await conectarMongoDB();
+        if (gameData) {
+            res.json(gameData);
+        } else {
+            res.status(500).json({ error: 'Datos no disponibles' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
 app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-    const gameData = await Game.findOne();
-    const user = gameData?.usuarios.find(u => u.username === username && u.password === password);
-    
-    if (user) {
-        res.json({ success: true, username: user.username });
-    } else {
-        res.status(401).json({ success: false, error: 'Credenciales incorrectas' });
+    try {
+        await conectarMongoDB();
+        const { username, password } = req.body;
+        const gameData = await Game.findOne();
+        if (user) {
+            res.json({ success: true, username: user.username });
+        } else {
+            res.status(401).json({ success: false, error: 'Credenciales incorrectas' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
 app.post('/api/partidas', async (req, res) => {
     try {
+        await conectarMongoDB();
         const { partida, actualizarStats } = req.body;
         
         const partidaMongo = {
@@ -123,6 +132,7 @@ app.post('/api/partidas', async (req, res) => {
 
 app.put('/api/partidas/:id/mvp', async (req, res) => {
     try {
+        await conectarMongoDB();
         const { id } = req.params;
         const { mvp } = req.body;
         
@@ -144,6 +154,7 @@ app.put('/api/partidas/:id/mvp', async (req, res) => {
 
 app.put('/api/jugadores/:nombre', async (req, res) => {
     try {
+        await conectarMongoDB();
         const { nombre } = req.params;
         const { nuevoNombre, imagen } = req.body;
         

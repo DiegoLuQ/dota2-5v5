@@ -230,17 +230,25 @@ function toggleAccordion(id) {
 }
 
 function renderPlayerLine(jugador, partidaId, equipo, mvp, ganador) {
-    const historial = data.jugadores.find(j => j.nombre === jugador)?.historial;
+    const playerObj = data.jugadores.find(j => j.nombre === jugador);
+    const historial = playerObj?.historial;
     const heroe = historial ? historial[partidaId] : '?';
     const isMVP = mvp === jugador;
+    const avatar = playerObj?.imagen || `https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=${jugador.charAt(0)}`;
     
     return `
-        <li class="flex justify-between items-center text-sm ${isMVP ? 'bg-dotagold bg-opacity-20 rounded px-2' : ''}">
-            <span class="text-white ${isMVP ? 'filter drop-shadow-lg text-lg' : ''} ${currentUser ? 'cursor-pointer hover:text-dotagold' : ''}" 
-                  ${currentUser ? `onclick="setMVP('${partidaId}', '${jugador}')"` : ''}>
-                ${jugador}${isMVP ? ' 🥇' : ''}
-            </span>
-            <span class="hero-badge">${heroe}</span>
+        <li class="flex justify-between items-center text-sm py-1 ${isMVP ? 'bg-dotagold bg-opacity-20 rounded px-2' : ''}">
+            <div class="flex items-center gap-2">
+                <img src="${avatar}" 
+                     alt="${jugador}" 
+                     class="w-6 h-6 rounded-full object-cover border border-gray-700"
+                     onerror="this.src='https://via.placeholder.com/48x48/2a2a2a/c8aa6e?text=${jugador.charAt(0)}'">
+                <span class="text-white ${isMVP ? 'filter drop-shadow-lg font-bold' : ''} ${currentUser ? 'cursor-pointer hover:text-dotagold' : ''}" 
+                      ${currentUser ? `onclick="setMVP('${partidaId}', '${jugador}')"` : ''}>
+                    ${jugador}${isMVP ? ' 🥇' : ''}
+                </span>
+            </div>
+            <span class="hero-badge bg-dotagray px-2 py-0.5 rounded text-xs text-gray-300 font-mono border border-gray-700">${heroe}</span>
         </li>
     `;
 }
